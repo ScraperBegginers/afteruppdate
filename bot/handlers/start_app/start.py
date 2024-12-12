@@ -12,6 +12,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start_message(message: types.Message, state: FSMContext):
+    # 123
     await state.clear()
 
     user, created = await User.get_or_create(user_id=message.from_user.id, defaults={
