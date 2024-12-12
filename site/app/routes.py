@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 
-from global_config import BOT_TOKEN
 from .check_valid_data import verify_telegram_init_data
 from .models import db, User, Tasks, Config
 
@@ -14,7 +13,7 @@ def verify_init_data():
     if not init_data:
         return jsonify({'error': 'No initData provided'}), 400
 
-    is_valid = verify_telegram_init_data(init_data=init_data, bot_token=BOT_TOKEN)
+    is_valid = verify_telegram_init_data(init_data=init_data, bot_token='5544856701:AAGsqlJQnBuDjN3wmF4wK2LHrIkK6sPLCew')
     if is_valid:
         return jsonify({'message': 'InitData is valid'}), 200
     else:
