@@ -106,8 +106,9 @@ def login():
 @jwt_required()
 def increment_spins():
     current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
     
-    if current_user != "admin33":
+    if current_user != admin_username:
         return jsonify({"error": "Доступ запрещен"}), 403
 
     user_id = request.json.get("user_id")
