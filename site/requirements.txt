@@ -3,3 +3,4 @@ flask-sqlalchemy
 flask-migrate
 flask-cors
 gunicorn
+python-dotenv

@@ -1,15 +1,17 @@
 from . import db
+from sqlalchemy import Column, Integer, String, Boolean, Float, text
+from time import time
 
 class User(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    firstname = db.Column(db.String(50), nullable=False)
-    username = db.Column(db.String(80), nullable=False)
-    spins = db.Column(db.Integer, default=0)
-    daily_spin = db.Column(db.Float, default=0)
-    my_referral = db.Column(db.Integer, default=0)
-    get_bonus_for_two_friends = db.Column(db.Boolean, default=False)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    firstname = Column(String(50), nullable=False, server_default=text("'Unknown'"))
+    username = Column(String(80), nullable=False, server_default=text("'anonymous'"))
+    spins = Column(Integer, default=0, nullable=False, server_default=text("0"))
+    daily_spin = Column(Float, default=0.0, nullable=False, server_default=text("0.0"))
+    my_referral = Column(Integer, default=0, nullable=False, server_default=text("0"))
+    get_bonus_for_two_friends = Column(Boolean, default=False, nullable=False, server_default=text("0"))
+    total_spins = Column(Integer, default=0, nullable=False, server_default=text("0"))
 
     def to_dict(self):
         return {
@@ -58,3 +60,18 @@ class Config(db.Model):
         }
 
 
+class SubscribeChecker(db.Model):
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    channel_id = Column(Integer, nullable=False)
+    time_wait = Column(Float, default=time(), server_default=text(str(time())))
+    status_sub = Column(Boolean, server_default=text('0'))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'channel_id': self.channel_id,
+            'time_wait': self.time_wait,
+            'status_sub': self.status_sub,
+        }

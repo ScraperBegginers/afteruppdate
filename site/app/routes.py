@@ -1,9 +1,17 @@
 from flask import Blueprint, request, jsonify
 
 from .check_valid_data import verify_telegram_init_data
-from .models import db, User, Tasks, Config
+from .models import db, User, Tasks, Config, SubscribeChecker
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token
+from dotenv import load_dotenv
+import os
+from time import time
+
+load_dotenv() 
 
 bp = Blueprint('routes', __name__)
+
 
 @bp.route('/api/verify-init-data', methods=['POST'])
 def verify_init_data():
@@ -67,3 +75,182 @@ def update_config():
 
     db.session.commit()
     return jsonify({'message': 'Configuration updated successfully'})
+
+@bp.route('/api/token', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+
+    admin_username = os.getenv("ADMIN_USERNAME")
+    admin_password = os.getenv("ADMIN_PASSWORD")
+
+    if username == admin_username and password == admin_password:
+        access_token = create_access_token(identity=username)
+        refresh_token = create_refresh_token(identity=username)
+
+        return jsonify({
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }), 200
+    else:
+        return jsonify({"error": "Неправильные логин или пароль"}), 401
+
+@bp.route('/api/spins/increment', methods=['POST'])
+@jwt_required()
+def increment_spins():
+    current_user = get_jwt_identity()
+    
+    if current_user != "admin33":
+        return jsonify({"error": "Доступ запрещен"}), 403
+
+    user_id = request.json.get("user_id")
+    increment_by = request.json.get("increment_by", 1)
+
+    user = User.query.filter_by(user_id=user_id).first()
+    if user:
+        user.spins += increment_by
+        db.session.commit()
+        return jsonify({"message": "Вращения обновлены", "total_spins": user.spins})
+    return jsonify({"error": "Пользователь не найден"}), 404
+
+@bp.route('/api/spins/decrement', methods=['POST'])
+@jwt_required()
+def decrement_spins():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+
+    user_id = request.json.get("user_id")
+    decrement_by = request.json.get("increment_by", 1)
+
+    user = User.query.filter_by(user_id=user_id).first()
+    
+    if user:
+        if user.spins <= 0:
+            return jsonify({"message": "У пользователя не осталось вращений!"}), 400
+        user.spins -= decrement_by
+        db.session.commit()
+        return jsonify({"message": "Вращения обновлены", "total_spins": user.spins})
+    return jsonify({"error": "Пользователь не найден"}), 404
+
+@bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    current_user = get_jwt_identity()
+    new_access_token = create_access_token(identity=current_user)
+    return jsonify(access_token=new_access_token)
+
+
+@bp.route('/api/spins/newspin', methods=['POST'])
+@jwt_required()
+def newspin():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+
+    user_id = request.json.get("user_id")
+
+    user = User.query.filter_by(user_id=user_id).first()
+    
+    if user:
+        user.total_spins += 1
+        db.session.commit()
+        return jsonify({"message": "Колисество вращения обновлены", "total_spins": user.total_spins})
+    return jsonify({"error": "Пользователь не найден"}), 404
+
+@bp.route('/api/register_user', methods=['POST'])
+@jwt_required()
+def register_new_user():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+
+    user_id = request.json.get('user_id')
+    first_name = request.json.get('firstname', "Unknown")
+    username = request.json.get('username', "anonymous")
+
+    new_user = User(
+        user_id=user_id,
+        firstname=first_name,
+        username=username
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({'message': 'Пользователь создан'})
+
+@bp.route('/api/update_daily_time', methods=['POST'])
+@jwt_required()
+def update_daily_time():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+    
+    user_id = request.json.get('user_id')
+    
+    if not user_id:
+        return jsonify({"error": "user_id не указан"}), 400
+    
+    user = User.query.filter_by(user_id=user_id).first()
+    
+    if user is None:
+        return jsonify({"error": "Пользователь не найден"}), 404
+    
+    user.daily_spin = time()
+    db.session.commit()
+    
+    return jsonify({"message": "Дата ежедневного приза была обновлена", "daily_time": user.daily_spin})
+
+@bp.route('/api/subscription_trhrottling', methods=['POST'])
+@jwt_required()
+def input_throttling_subscription():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+    
+    user_id = request.json.get("user_id")
+    channel_id = request.json.get('channel_id')
+    
+    user = User.query.filter_by(user_id=user_id).first()
+    
+    if user is None:
+        return jsonify({"error": "Пользователь не найден"}), 404
+    
+    new_check = SubscribeChecker(
+        user_id=user_id,
+        channel_id=channel_id
+    )
+    
+    db.session.add(new_check)
+    db.session.commit()
+    
+    return  jsonify({"message": "Троттлинг был добавлен в базу данных"})
+
+@bp.route('/api/get_subscription_trhrottling', methods=['GET'])
+def get_all_subscriptions():
+    lists_throttlings = []
+
+    user_id = request.args.get('user_id')
+
+    if user_id:
+        all_sub = SubscribeChecker.query.filter_by(user_id=user_id).all()
+        if all_sub:
+            lists_throttlings = [sub.to_dict() for sub in all_sub]
+            return jsonify({"user_id": user_id, "subs": lists_throttlings})
+        else:
+            return jsonify({'error': "Пользователь не найден"}), 404
+
+    all_subs = SubscribeChecker.query.all()
+    lists_throttlings = [sub.to_dict() for sub in all_subs]
+
+    return jsonify({"subs": lists_throttlings})
