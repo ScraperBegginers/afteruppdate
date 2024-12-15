@@ -17,10 +17,13 @@ class User(db.Model):
         return {
             'id': self.id,
             'user_id': self.user_id,
+            'firstname': self.firstname,
             'username': self.username,
             'spins': self.spins,
             'daily_spin': self.daily_spin,
             'my_referral': self.my_referral,
+            'total_spins': self.total_spins,
+            'get_bonus_for_two_friends': self.get_bonus_for_two_friends
         }
 
 
