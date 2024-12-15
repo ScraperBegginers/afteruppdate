@@ -59,14 +59,7 @@ def get_config():
     return jsonify(config.to_dict())
 
 @bp.route('/api/config', methods=['POST'])
-@jwt_required()
 def update_config():
-    current_user = get_jwt_identity()
-    admin_username = os.getenv("ADMIN_USERNAME")
-    
-    if current_user != admin_username:
-        return jsonify({"error": "Доступ запрещен"}), 403
-    
     data = request.json
     config = Config.query.first()
     if not config:
@@ -261,33 +254,3 @@ def get_all_subscriptions():
     lists_throttlings = [sub.to_dict() for sub in all_subs]
 
     return jsonify({"subs": lists_throttlings})
-
-@bp.route('/api/set_refferal', methods=['POST'])
-@jwt_required()
-def set_referral():
-    current_user = get_jwt_identity()
-    admin_username = os.getenv("ADMIN_USERNAME")
-    
-    if current_user != admin_username:
-        return jsonify({"error": "Доступ запрещен"}), 403
-    
-    referral = request.json.get('referral')
-    user_id = request.json.get('user_id')
-    
-    if referral and user_id:
-        get_user = User.query.filter_by(user_id=user_id).first()
-        get_referral = User.query.filter_by(user_id=referral).first()
-        
-        if get_user and get_referral:
-            if get_user.my_referral == 0:
-                get_user.my_referral = referral
-                db.session.commit()
-                return jsonify({"message": f"Реферрал успешно добавлен к {user_id}"})
-            else:
-                return jsonify({'error': "У этого пользователя уже есть реферал!"}), 403
-        else:
-            return jsonify({'error': "Пользователь или реферал не найден в базе данных"}), 403
-    
-    return jsonify({"error": "Не указан user_id или referral"}), 403
-    
-    
