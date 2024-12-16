@@ -10,7 +10,7 @@ class User(db.Model):
     spins = Column(Integer, default=0, nullable=False, server_default=text("0"))
     daily_spin = Column(Float, default=0.0, nullable=False, server_default=text("0.0"))
     my_referral = Column(Integer, default=0, nullable=False, server_default=text("0"))
-    get_bonus_for_two_friends = Column(Boolean, default=False, nullable=False, server_default=text("0"))
+    get_bonus_for_two_friends = Column(String, default=False, nullable=False, server_default=text("0"))
     total_spins = Column(Integer, default=0, nullable=False, server_default=text("0"))
 
     def to_dict(self):
