@@ -342,3 +342,5 @@ def set_get_bonus():
     user.get_bonus_for_two_friends = '1'
     db.session.commit()
     return jsonify({"message": "Установлен статус True на бонусе"})
+
+# 123
