@@ -2,7 +2,6 @@ from . import db
 from sqlalchemy import Column, Integer, String, Boolean, Float, text
 from time import time
 
-# 123 33
 class User(db.Model):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
@@ -30,23 +29,25 @@ class User(db.Model):
 
 class Tasks(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    link = db.Column(db.String(80), nullable=False)
+    link = db.Column(db.String(80), nullable=True)
+    channel_id = db.Column(db.String(80), nullable=True)
 
     def to_dict(self):
         return {
             'id': self.id,
             'link': self.link,
+            'channel_id': self.channel_id
         }
 
 class TasksCompleted(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    link = db.Column(db.String(80), nullable=False)
+    channel_id = db.Column(db.String(80), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
-            'link': self.link,
+            'channel_id': self.channel_id,
             'user_id': self.user_id,
         }
 
