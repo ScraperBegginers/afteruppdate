@@ -31,7 +31,7 @@ def verify_init_data():
 def get_user(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': 'User not found'}), 400
     return jsonify(user.to_dict())
 
 @bp.route('/api/tasks', methods=['GET'])
