@@ -343,4 +343,4 @@ def set_get_bonus():
     db.session.commit()
     return jsonify({"message": "Установлен статус True на бонусе"})
 
-# 123
+# 123 213

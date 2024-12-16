@@ -2,7 +2,7 @@ from . import db
 from sqlalchemy import Column, Integer, String, Boolean, Float, text
 from time import time
 
-# 123
+# 123 33
 class User(db.Model):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
