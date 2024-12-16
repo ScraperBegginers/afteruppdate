@@ -317,4 +317,28 @@ def set_get_bonus():
     db.session.commit()
     return jsonify({"message": "Установлен статус True на бонусе"})
     
+@bp.route('/api/set_get_bonus', methods=['POST'])
+@jwt_required()
+def set_get_bonus():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
     
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+    
+    user_id = request.json.get('user_id')
+    
+    if not user_id:
+        return jsonify({"error": "Укажите user_id"}), 403
+        
+    user = User.query.filter_by(user_id=user_id).first()
+    
+    if not user:
+        return jsonify({"error": "user_id указан не верно"}), 403
+
+    if user.get_bonus_for_two_friends == '1':
+        return jsonify({"message": "У пользователя уже установлен статус True"})
+    
+    user.get_bonus_for_two_friends = '1'
+    db.session.commit()
+    return jsonify({"message": "Установлен статус True на бонусе"})
