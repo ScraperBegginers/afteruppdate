@@ -97,7 +97,11 @@ def add_complete_sub(user_id, channel_id):
         }
     )
     
-    responseAddIncrement = requests.post(
+    
+    if response.status_code == 200:
+        print(f'{user_id} подписался на {channel_id}')
+        
+        responseAddIncrement = requests.post(
         URL + '/spins/increment',
         headers={
             'Authorization': f'Bearer {API_TOKEN}',
@@ -105,10 +109,7 @@ def add_complete_sub(user_id, channel_id):
         }, 
         json={ 
             'user_id': user_id
-        }
-    )
-    
-    if response.status_code == 200:
-        print(f'{user_id} подписался на {channel_id}')
-    if responseAddIncrement.status_code == 200:
-        print(f'Пользователю: {user_id} прибавлен спин')
+        })
+        
+        if responseAddIncrement.status_code == 200:
+            print(f'Пользователю: {user_id} прибавлен спин')

@@ -394,14 +394,18 @@ def add_complete_tasks():
 
     get_my_sub = SubscribeChecker.query.filter_by(user_id=user_id, channel_id=channel_id).first()
     if get_my_sub:
-        get_my_sub.status_sub = True
+        if get_my_sub.status_sub:  # Проверяем, что уже True
+            return jsonify({"message": "Бонус уже был выдан за подписку"}), 204
+        get_my_sub.status_sub = True  # Обновляем статус подписки
     else:
         return jsonify({"error": "Подписка не найдена"}), 404
 
+    # Проверяем, была ли задача уже выполнена
     existing_task = TasksCompleted.query.filter_by(user_id=user_id, channel_id=channel_id).first()
     if existing_task:
         return jsonify({"message": "Задача уже была выполнена ранее"}), 200
 
+    # Создаем новую задачу
     new_complete_tasks = TasksCompleted(
         user_id=user_id,
         channel_id=channel_id
@@ -415,5 +419,6 @@ def add_complete_tasks():
         db.session.rollback()
         print(f"Ошибка при добавлении выполненной задачи: {e}")
         return jsonify({"error": "Произошла ошибка при сохранении задачи"}), 500
+
 
     
