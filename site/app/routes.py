@@ -267,7 +267,7 @@ def get_all_subscriptions():
             lists_throttlings = [sub.to_dict() for sub in all_sub]
             return jsonify({"user_id": user_id, "subs": lists_throttlings})
         else:
-            return jsonify({'error': "Пользователь не найден"}), 400
+            return jsonify({"user_id": user_id, "subs": []})
 
     all_subs = SubscribeChecker.query.all()
     lists_throttlings = [sub.to_dict() for sub in all_subs]
