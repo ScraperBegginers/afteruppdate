@@ -21,7 +21,7 @@ def serve_index():
 def serve_static(path):
     return send_from_directory(current_app.static_folder, path)
 
-@bp.errorhandler(404)W
+@bp.errorhandler(404)
 def not_found(e):
     return send_from_directory(current_app.static_folder, 'index.html')
 
