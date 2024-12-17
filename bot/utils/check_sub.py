@@ -11,11 +11,12 @@ async def check_sub_to_channel(bot):
                 
         for sub in all_sub:
             if sub['status_sub'] is False:
-                if float(sub['time_wait'] + 600) <= time():
-                
+                print(3)
+                if float(sub['time_wait'] + 600) >= time():
+                    print(4)
                     chat_member = await bot.get_chat_member(chat_id=sub['channel_id'], user_id=sub['user_id'])
                     print(chat_member.status)
-                    if chat_member.status:
+                    if str(chat_member.status) in ['ChatMemberStatus.CREATOR', 'ChatMemberStatus.MEMBER', 'ChatMemberStatus.ADMINISTRATOR']:
                         add_complete_sub(user_id=sub['user_id'], channel_id=sub['channel_id'])
                         await asyncio.sleep(1)
                     
