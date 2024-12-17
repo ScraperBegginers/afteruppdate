@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/static/css/main.cd263bc8.css",
+    "main.js": "/static/js/main.f935fe53.js",
+    "static/media/logo_wb_for_modal.png": "/static/media/logo_wb_for_modal.8b4159aea377b9d1a1f9.png",
+    "static/media/center_button.png": "/static/media/center_button.d7a1a5fceedd0bafb83b.png",
+    "static/media/slide_1.png": "/static/media/slide_1.eaf012cf7639bd2be82c.png",
+    "static/media/slide_3.png": "/static/media/slide_3.73eb8e1372ee97cf24c4.png",
+    "static/media/slide-2.png": "/static/media/slide-2.19f8cd9db80bdeb14d4d.png",
+    "static/media/slide_4.png": "/static/media/slide_4.214a67374fe0586a2d2d.png",
+    "static/media/big_circle.webp": "/static/media/big_circle.7cdf47e1b03c0e2441f2.webp",
+    "static/media/middle_circle.webp": "/static/media/middle_circle.30dbf610db6d8c2fc9cb.webp",
+    "static/media/sky_pink.png": "/static/media/sky_pink.f948a1affd02ae511800.png",
+    "static/media/little_circle.webp": "/static/media/little_circle.129e1a1dc2c673de7fd8.webp",
+    "static/media/gift.png": "/static/media/gift.e904bc980e2c7c8e89a0.png",
+    "static/media/coupon_icon.png": "/static/media/coupon_icon.9553cc6857ef4f7defc4.png",
+    "static/media/arrow.png": "/static/media/arrow.bed5efb1d25cff2aea7b.png",
+    "static/media/gazprom_icon.webp": "/static/media/gazprom_icon.f3ed550aa15544996da2.webp",
+    "static/media/roulete_static_nav.svg": "/static/media/roulete_static_nav.8cf19bcd826818c3da62991979b892f7.svg",
+    "static/media/roulete_static.svg": "/static/media/roulete_static.5593e0d6c70a3f6c642b19c525d240ae.svg",
+    "static/media/checklist.svg": "/static/media/checklist.6038e3391f8ba374bcc08d6e51a793d6.svg",
+    "static/media/friends_nav.svg": "/static/media/friends_nav.e7b00c3ce68687d5c3bca84049135dc8.svg",
+    "static/media/friends_nav_coupon.svg": "/static/media/friends_nav_coupon.ef06fbf08377bf3c38f0b6a112c5975e.svg",
+    "static/media/prev-button.svg": "/static/media/prev-button.f2429d90657288fc60ad81e377f60a30.svg",
+    "static/media/next-button.svg": "/static/media/next-button.5a7758f1bbb4d67f5f21c5ba6d8eb821.svg",
+    "index.html": "/index.html",
+    "static/media/question.svg": "/static/media/question.b3fb7c16f7ad8c2c344e6b4f1f9da297.svg",
+    "static/media/question_white.svg": "/static/media/question_white.1e20b8094301fe69ae4e428596705458.svg",
+    "static/media/close_icon.svg": "/static/media/close_icon.07620ea9bae2d2c7a396ca8e24a5a1ca.svg",
+    "main.cd263bc8.css.map": "/static/css/main.cd263bc8.css.map",
+    "main.f935fe53.js.map": "/static/js/main.f935fe53.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.cd263bc8.css",
+    "static/js/main.f935fe53.js"
+  ]
+}

@@ -1,17 +1,29 @@
 from flask import Blueprint, request, jsonify
 
 from .check_valid_data import verify_telegram_init_data
-from .models import db, User, Tasks, Config, SubscribeChecker
+from .models import db, User, Config, SubscribeChecker
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended import create_access_token, create_refresh_token
 from dotenv import load_dotenv
 import os
+from flask import Blueprint, send_from_directory, current_app
 from time import time
 
 load_dotenv() 
 
 bp = Blueprint('routes', __name__)
 
+@bp.route('/')
+def serve_index():
+    return send_from_directory(current_app.static_folder, 'index.html')
+
+@bp.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory(current_app.static_folder, path)
+
+@bp.errorhandler(404)
+def not_found(e):
+    return send_from_directory(current_app.static_folder, 'index.html')
 
 @bp.route('/api/verify-init-data', methods=['POST'])
 def verify_init_data():
@@ -33,13 +45,6 @@ def get_user(user_id):
     if not user:
         return jsonify({'error': 'User not found'}), 404
     return jsonify(user.to_dict())
-
-@bp.route('/api/tasks', methods=['GET'])
-def get_tasks():
-    tasks = Tasks.query.all()
-    tasks_list = [task.to_dict() for task in tasks]
-
-    return jsonify(tasks_list)
 
 @bp.route('/api/user/get_friends/<int:user_id>', methods=['GET'])
 def get_friends(user_id):

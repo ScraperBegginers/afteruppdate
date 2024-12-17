@@ -8,18 +8,20 @@ from datetime import timedelta
 db = SQLAlchemy()
 migrate = Migrate()
 
+
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder=r"C:\Users\Admin\Desktop\webapp Боты\WbRouleteBot\site\static", static_url_path="/")
+
+    # Конфигурации
     app.config["JWT_SECRET_KEY"] = "zxcced322kk0f4fFffF3FF333f"
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=999)
     app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
 
     JWTManager(app)
-
     app.config.from_object('config.Config')
 
+    # CORS, БД и миграции
     CORS(app)
-
     db.init_app(app)
     migrate.init_app(app, db)
 
@@ -28,3 +30,4 @@ def create_app():
         app.register_blueprint(routes.bp)
 
     return app
+
