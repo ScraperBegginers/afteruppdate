@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from .check_valid_data import verify_telegram_init_data
-from .models import db, User, Config, SubscribeChecker
+from .models import db, User, Config, SubscribeChecker, Tasks
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended import create_access_token, create_refresh_token
 from dotenv import load_dotenv
@@ -24,6 +24,12 @@ def serve_static(path):
 @bp.errorhandler(404)
 def not_found(e):
     return send_from_directory(current_app.static_folder, 'index.html')
+
+@bp.route('/api/tasks', methods=['GET'])
+def get_tasks():
+    tasks = Tasks.query.all()
+    tasks_list = [task.to_dict() for task in tasks]
+    return jsonify(tasks_list)
 
 @bp.route('/api/verify-init-data', methods=['POST'])
 def verify_init_data():
