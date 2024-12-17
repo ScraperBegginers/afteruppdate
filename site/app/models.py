@@ -1,6 +1,5 @@
 from . import db
 from sqlalchemy import Column, Integer, String, Boolean, Float, text
-from time import time
 
 class User(db.Model):
     id = Column(Integer, primary_key=True)
@@ -69,7 +68,7 @@ class SubscribeChecker(db.Model):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, nullable=False)
     channel_id = Column(Integer, nullable=False)
-    time_wait = Column(Float, default=time(), server_default=text(str(time())))
+    time_wait = Column(Float, nullable=False)
     status_sub = Column(Boolean, server_default=text('0'))
     
     def to_dict(self):

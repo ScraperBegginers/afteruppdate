@@ -128,3 +128,8 @@ async def check_statisctic(message: types.Message):
         response += f"🔗 {stat['link']} - {stat['count']} переходов\n"
 
     await message.answer(response)
+    
+
+@router.message(F.text == 'Управление ссылками')
+async def links_view(message: types.Message):
+    await message.answer('asd')

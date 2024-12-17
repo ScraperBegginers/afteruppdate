@@ -248,7 +248,8 @@ def input_throttling_subscription():
     
     new_check = SubscribeChecker(
         user_id=user_id,
-        channel_id=channel_id
+        channel_id=channel_id,
+        time_wait=str(time())
     )
     
     db.session.add(new_check)
@@ -294,6 +295,7 @@ def set_referral():
         if get_user and get_referral:
             if get_user.my_referral == 0:
                 get_user.my_referral = referral
+                get_referral.spins += 1
                 db.session.commit()
                 return jsonify({"message": f"Реферрал успешно добавлен к {user_id}"})
             else:

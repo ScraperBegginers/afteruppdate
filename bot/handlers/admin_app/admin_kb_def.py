@@ -16,6 +16,9 @@ def create_admin_keyboard():
             KeyboardButton(text='Управление каналами')
         ],
         [
+            KeyboardButton(text='Управление ссылками')
+        ],
+        [
             KeyboardButton(text='Создать реферальную ссылку')
         ],
         [
