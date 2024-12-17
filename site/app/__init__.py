@@ -4,13 +4,15 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
+import os
 
 db = SQLAlchemy()
 migrate = Migrate()
 
 
 def create_app():
-    app = Flask(__name__, static_folder="..\static", static_url_path="/")
+    static_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static")
+    app = Flask(__name__, static_folder=static_path, static_url_path="/")
 
     # Конфигурации
     app.config["JWT_SECRET_KEY"] = "zxcced322kk0f4fFffF3FF333f"
