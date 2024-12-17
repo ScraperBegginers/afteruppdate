@@ -6,16 +6,16 @@ def create_user(user_id, first_name, username):
         'https://afteruppdate.onrender.com/api/register_user',
         headers={
             'Authorization': f'Bearer {API_TOKEN}',
-            'Content-Type': 'application/json'  # Убедимся, что это JSON
+            'Content-Type': 'application/json'  
         }, 
-        json={  # Отправляем JSON вместо data
+        json={ 
             'user_id': user_id,
             'firstname': first_name,
             'username': username
         }
     )
     if response.status_code == 200:
-        pass
+        print('Пользователь был создан')
     else:
         print(response.json())
 
