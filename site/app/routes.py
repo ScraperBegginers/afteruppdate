@@ -21,7 +21,7 @@ def serve_index():
 def serve_static(path):
     return send_from_directory(current_app.static_folder, path)
 
-@bp.errorhandler(404)W
+@bp.errorhandler(404)
 def not_found(e):
     return send_from_directory(current_app.static_folder, 'index.html')
 
@@ -327,3 +327,49 @@ def set_get_bonus_update():
     user.get_bonus_for_two_friends = '1'
     db.session.commit()
     return jsonify({"message": "Установлен статус True на бонусе"})
+
+@bp.route('/api/add_tasks', methods=['POST'])
+@jwt_required()
+def add_tasks():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+
+    link = request.json.get('link')
+    channel_id = request.json.get('channel_id')
+        
+    tasks = Tasks(
+        link=link,
+        channel_id=channel_id
+    )
+    
+    db.session.add(tasks)
+    db.session.commit()
+    return jsonify({"message": "Задача была добавлена"})
+
+
+@bp.route('/api/del_tasks', methods=['POST'])
+@jwt_required()
+def del_tasks():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+
+    channel_id = request.json.get('channel_id')
+    
+    if not channel_id:
+        return jsonify({"error": "Не указан channel_id"}), 400
+
+    task = Tasks.query.filter_by(channel_id=channel_id).first()
+
+    if not task:
+        return jsonify({"error": "Задача не найдена"}), 404
+
+    db.session.delete(task)
+    db.session.commit()
+
+    return jsonify({"message": "Задача была удалена"})
