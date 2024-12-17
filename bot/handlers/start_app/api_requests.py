@@ -18,4 +18,3 @@ def create_user(user_id, first_name, username):
         print('Пользователь был создан')
     else:
         print(response.json())
-

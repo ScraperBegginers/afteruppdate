@@ -197,7 +197,8 @@ def register_new_user():
     new_user = User(
         user_id=user_id,
         firstname=first_name,
-        username=username
+        username=username,
+        spins=2
     )
 
     db.session.add(new_user)
