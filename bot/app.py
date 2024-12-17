@@ -6,9 +6,9 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from database.database_db import init_db
-from global_config import BOT_TOKEN
 from handlers.start_app import start
 from utils.middlewaries.check_sub import SubscriptionMiddleware
+from config import BOT_TOKEN
 
 dp = Dispatcher()
 

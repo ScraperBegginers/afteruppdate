@@ -1,12 +1,16 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
-from bot.utils.reader_config import get_urls
-
+from utils.reader_config import get_urls
 
 def create_kb_start():
+    init_data_placeholder = "{initData}" 
+
     inline_keyboard = [
         [
-            InlineKeyboardButton(text='Играть', web_app=WebAppInfo(url='https://google.com'))
+            InlineKeyboardButton(
+                text='Играть',
+                web_app=WebAppInfo(url=f'https://afteruppdate.onrender.com/?initData={init_data_placeholder}')
+            )
         ],
         [
             InlineKeyboardButton(text='Отзывы', url=get_urls('reviews')),

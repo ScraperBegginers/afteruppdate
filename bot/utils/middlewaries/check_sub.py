@@ -2,8 +2,8 @@ from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from typing import Callable, Dict, Any, Awaitable
 
-from bot.utils.get_photo import read_photo
-from bot.utils.reader_config import get_channel_id
+from utils.get_photo import read_photo
+from utils.reader_config import get_channel_id
 
 
 async def check_subscribe_to_channel(bot, user_id: int):
