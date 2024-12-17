@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from .check_valid_data import verify_telegram_init_data
-from .models import db, User, Config, SubscribeChecker, Tasks
+from .models import db, User, Config, SubscribeChecker, Tasks, TasksCompleted
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended import create_access_token, create_refresh_token
 from dotenv import load_dotenv
@@ -374,3 +374,26 @@ def del_tasks():
     db.session.commit()
 
     return jsonify({"message": "Задача была удалена"})
+
+@bp.route('/api/add_complete_tasks', methods=['POST'])
+@jwt_required()
+def add_complete_tasks():
+    current_user = get_jwt_identity()
+    admin_username = os.getenv("ADMIN_USERNAME")
+    
+    if current_user != admin_username:
+        return jsonify({"error": "Доступ запрещен"}), 403
+
+    user_id = request.json.get('user_id')
+    channel_id = request.json.get('channel_id')
+
+    new_complete_tasks = TasksCompleted(
+        user_id=user_id,
+        channel_id=channel_id
+    )
+    
+    db.session.add(new_complete_tasks)
+    db.session.commit()
+    
+    return jsonify({"message": "Задача была выполнена"})
+    

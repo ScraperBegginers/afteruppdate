@@ -7,6 +7,7 @@ from aiogram.enums import ParseMode
 
 from database.database_db import init_db
 from handlers.start_app import start
+from handlers.admin_app import admin
 from utils.middlewaries.check_sub import SubscriptionMiddleware
 from config import BOT_TOKEN
 
@@ -22,6 +23,7 @@ async def main() -> None:
 
     dp.include_router(start.router)
 
+    dp.include_router(admin.router)
     await init_db()
     await dp.start_polling(bot)
 

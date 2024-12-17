@@ -9,3 +9,18 @@ class User(Model):
 
     class Meta:
         table = "users"
+
+class ReferralLinks(Model):
+    link_id = fields.BigIntField(pk=True, unique=True)
+    link = fields.CharField(max_length=255, null=True)
+    
+    class Meta:
+        table = "referral_links"
+        
+class HistoryReferralLinks(Model):
+    link_id = fields.BigIntField(pk=True, unique=True)
+    link = fields.CharField(max_length=255, null=True)
+    user_id = fields.BigIntField()
+    
+    class Meta:
+        table = "history_referral_links"
