@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
+from utils.check_sub import check_sub_to_channel
 from database.database_db import init_db
 from handlers.start_app import start
 from handlers.admin_app import admin
@@ -24,6 +25,10 @@ async def main() -> None:
     dp.include_router(start.router)
 
     dp.include_router(admin.router)
+    
+    loop = asyncio.get_event_loop()
+    loop.create_task(check_sub_to_channel(bot=bot))
+    
     await init_db()
     await dp.start_polling(bot)
 

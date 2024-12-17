@@ -83,3 +83,32 @@ def get_all_sub():
         URL + '/get_subscription_trhrottling'
     )
     return response.json()
+
+def add_complete_sub(user_id, channel_id):
+    response = requests.post(
+        URL + '/add_complete_tasks',
+        headers={
+            'Authorization': f'Bearer {API_TOKEN}',
+            'Content-Type': 'application/json'  
+        }, 
+        json={ 
+            'user_id': user_id,
+            'channel_id': channel_id,
+        }
+    )
+    
+    responseAddIncrement = requests.post(
+        URL + '/spins/increment',
+        headers={
+            'Authorization': f'Bearer {API_TOKEN}',
+            'Content-Type': 'application/json'  
+        }, 
+        json={ 
+            'user_id': user_id
+        }
+    )
+    
+    if response.status_code == 200:
+        print(f'{user_id} подписался на {channel_id}')
+    if responseAddIncrement.status_code == 200:
+        print(f'Пользователю: {user_id} прибавлен спин')
