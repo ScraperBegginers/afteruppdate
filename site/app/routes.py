@@ -43,14 +43,14 @@ def verify_init_data():
 def get_user(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': 'User not found'}), 400
     return jsonify(user.to_dict())
 
 @bp.route('/api/user/get_friends/<int:user_id>', methods=['GET'])
 def get_friends(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': 'User not found'}), 400
 
     total_friends = User.query.filter_by(my_referral=user_id).count()
 
@@ -60,7 +60,7 @@ def get_friends(user_id):
 def get_config():
     config = Config.query.first()
     if not config:
-        return jsonify({'error': 'Configuration not found'}), 404
+        return jsonify({'error': 'Configuration not found'}), 400
     return jsonify(config.to_dict())
 
 @bp.route('/api/config', methods=['POST'])
@@ -124,7 +124,7 @@ def increment_spins():
         user.spins += increment_by
         db.session.commit()
         return jsonify({"message": "Вращения обновлены", "total_spins": user.spins})
-    return jsonify({"error": "Пользователь не найден"}), 404
+    return jsonify({"error": "Пользователь не найден"}), 400
 
 @bp.route('/api/spins/decrement', methods=['POST'])
 @jwt_required()
@@ -146,7 +146,7 @@ def decrement_spins():
         user.spins -= decrement_by
         db.session.commit()
         return jsonify({"message": "Вращения обновлены", "total_spins": user.spins})
-    return jsonify({"error": "Пользователь не найден"}), 404
+    return jsonify({"error": "Пользователь не найден"}), 400
 
 @bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
@@ -173,7 +173,7 @@ def newspin():
         user.total_spins += 1
         db.session.commit()
         return jsonify({"message": "Колисество вращения обновлены", "total_spins": user.total_spins})
-    return jsonify({"error": "Пользователь не найден"}), 404
+    return jsonify({"error": "Пользователь не найден"}), 400
 
 @bp.route('/api/register_user', methods=['POST'])
 @jwt_required()
@@ -215,7 +215,7 @@ def update_daily_time():
     user = User.query.filter_by(user_id=user_id).first()
     
     if user is None:
-        return jsonify({"error": "Пользователь не найден"}), 404
+        return jsonify({"error": "Пользователь не найден"}), 400
     
     user.daily_spin = time()
     db.session.commit()
@@ -237,7 +237,7 @@ def input_throttling_subscription():
     user = User.query.filter_by(user_id=user_id).first()
     
     if user is None:
-        return jsonify({"error": "Пользователь не найден"}), 404
+        return jsonify({"error": "Пользователь не найден"}), 400
     
     new_check = SubscribeChecker(
         user_id=user_id,
@@ -261,7 +261,7 @@ def get_all_subscriptions():
             lists_throttlings = [sub.to_dict() for sub in all_sub]
             return jsonify({"user_id": user_id, "subs": lists_throttlings})
         else:
-            return jsonify({'error': "Пользователь не найден"}), 404
+            return jsonify({'error': "Пользователь не найден"}), 400
 
     all_subs = SubscribeChecker.query.all()
     lists_throttlings = [sub.to_dict() for sub in all_subs]
