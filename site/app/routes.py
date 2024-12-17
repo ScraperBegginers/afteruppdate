@@ -380,20 +380,38 @@ def del_tasks():
 def add_complete_tasks():
     current_user = get_jwt_identity()
     admin_username = os.getenv("ADMIN_USERNAME")
-    
+
     if current_user != admin_username:
         return jsonify({"error": "Доступ запрещен"}), 403
 
     user_id = request.json.get('user_id')
     channel_id = request.json.get('channel_id')
 
+    if not user_id or not channel_id:
+        return jsonify({"error": "Не указаны user_id или channel_id"}), 400
+
+    get_my_sub = SubscribeChecker.query.filter_by(user_id=user_id, channel_id=channel_id).first()
+    if get_my_sub:
+        get_my_sub.status_sub = True
+    else:
+        return jsonify({"error": "Подписка не найдена"}), 404
+
+    existing_task = TasksCompleted.query.filter_by(user_id=user_id, channel_id=channel_id).first()
+    if existing_task:
+        return jsonify({"message": "Задача уже была выполнена ранее"}), 200
+
     new_complete_tasks = TasksCompleted(
         user_id=user_id,
         channel_id=channel_id
     )
-    
-    db.session.add(new_complete_tasks)
-    db.session.commit()
-    
-    return jsonify({"message": "Задача была выполнена"})
+
+    try:
+        db.session.add(new_complete_tasks)
+        db.session.commit()
+        return jsonify({"message": "Задача была выполнена"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Ошибка при добавлении выполненной задачи: {e}")
+        return jsonify({"error": "Произошла ошибка при сохранении задачи"}), 500
+
     
