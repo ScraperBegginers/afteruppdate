@@ -10,7 +10,7 @@ migrate = Migrate()
 
 
 def create_app():
-    app = Flask(__name__, static_folder=r"C:\Users\Admin\Desktop\webapp Боты\WbRouleteBot\site\static", static_url_path="/")
+    app = Flask(__name__, static_folder="..\static", static_url_path="/")
 
     # Конфигурации
     app.config["JWT_SECRET_KEY"] = "zxcced322kk0f4fFffF3FF333f"
