@@ -58,9 +58,14 @@ def get_friends(user_id):
     if not user:
         return jsonify({'error': 'User not found'}), 400
 
-    total_friends = User.query.filter_by(my_referral=user_id).count()
+    friends = User.query.filter_by(my_referral=user_id).all()
 
-    return jsonify({'total_friends': total_friends})
+    friends_list = [friend.to_dict() for friend in friends]
+
+    return jsonify({
+        'total_friends': len(friends_list),
+        'friends': friends_list
+    }), 200
 
 @bp.route('/api/config', methods=['GET'])
 def get_config():
