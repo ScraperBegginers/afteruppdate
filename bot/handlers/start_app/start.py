@@ -19,7 +19,7 @@ async def start_message(message: types.Message, state: FSMContext):
     user, created = await User.get_or_create(user_id=message.from_user.id, defaults={
         'username': message.from_user.username
     })
-
+    
     if created:
         create_user(user_id=message.from_user.id, first_name=message.from_user.first_name, username=message.from_user.username)
 

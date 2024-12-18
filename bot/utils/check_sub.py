@@ -8,7 +8,6 @@ async def check_sub_to_channel(bot):
         all_sub = get_all_sub()['subs']
                 
         for sub in all_sub:
-            print(sub['status_sub'])
             if sub['status_sub'] is False:
                 if (float(sub['time_wait']) + 1200) >= time():
                     chat_member = await bot.get_chat_member(chat_id=sub['channel_id'], user_id=sub['user_id'])

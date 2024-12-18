@@ -38,3 +38,20 @@ def manage_channels_kb_def():
         ]
     ]
     return ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)
+
+def manage_config_kb_def():
+    keyboard = [
+        [
+            KeyboardButton(text='Изменить ссылку на розыгрыш')
+        ],
+        [
+            KeyboardButton(text='Изменить ссылку на менеджера')
+        ],
+        [
+            KeyboardButton(text='Изменить ссылку на партнера')
+        ],
+        [
+            KeyboardButton(text='Назад')
+        ]
+    ]
+    return ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)

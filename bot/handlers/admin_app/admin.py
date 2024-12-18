@@ -5,11 +5,11 @@ from aiogram.fsm.context import FSMContext
 from utils.generate_code import generate_referral_code
 from handlers.admin_app.admin_kb_inl import channels_title_name_kb_inl
 from config import ADMIN_ID
-from handlers.admin_app.admin_kb_def import create_admin_keyboard, create_back_to_admin, manage_channels_kb_def
+from handlers.admin_app.admin_kb_def import create_admin_keyboard, create_back_to_admin, manage_channels_kb_def, manage_config_kb_def
 from handlers.admin_app.admin_middlewaries import BotAdminCheckMiddleware
 from handlers.admin_app.mailing_script import start_mailing_to_users
 from models import HistoryReferralLinks, ReferralLinks, User
-from utils.api_requests import add_channel, def_channel, get_all_channels
+from utils.api_requests import add_channel, def_channel, get_all_channels, get_all_config, update_config_data
 from aiogram.exceptions import TelegramAPIError
 from tortoise.functions import Count
 
@@ -109,7 +109,7 @@ async def create_referral_link(message: types.Message, state: FSMContext):
     referral_code = generate_referral_code(bot_name=bot_me.username)
     await ReferralLinks(link=referral_code.split('=')[-1]).save()
     
-    await message.answer(f'Ваша реферальная ссылка для отслеживания: {referral_code}')
+    await message.answer(f'Ваша реферальная ссылка для отслеживания: {referral_code}', reply_markup=create_admin_keyboard())
     
 @router.message(F.text == 'Статистика по рефералам')
 async def check_statisctic(message: types.Message):
@@ -119,7 +119,7 @@ async def check_statisctic(message: types.Message):
         .values("link", "count")
 
     if not stats:
-        await message.answer("Переходов по реферальным ссылкам пока нет.")
+        await message.answer("Переходов по реферальным ссылкам пока нет.", reply_markup=create_admin_keyboard())
         return
 
 
@@ -132,4 +132,35 @@ async def check_statisctic(message: types.Message):
 
 @router.message(F.text == 'Управление ссылками')
 async def links_view(message: types.Message):
-    await message.answer('asd')
+    all_config_links = get_all_config()
+    await message.answer('Текущие ссылки\n\n'
+                         f'Ссылка на розыгрыш: {all_config_links["link_gift"]}\n'
+                         f'Ссылка на менеджера: {all_config_links["link_manager"]}\n'
+                         f'Ссылка на партерку: {all_config_links["link_partner"]}',
+                         reply_markup=manage_config_kb_def())
+    
+@router.message(F.text.in_({"Изменить ссылку на розыгрыш", "Изменить ссылку на менеджера", "Изменить ссылку на партнера"}))
+async def enter_new_link(message: types.Message, state: FSMContext):
+    link = message.text.replace("Изменить ссылку на ", "")
+    await state.update_data(type_link=link)
+    await message.answer(f"Введите новую ссылку для {link}",  reply_markup=create_back_to_admin())
+    await state.set_state("enter_new_link_state")
+    
+@router.message(StateFilter("enter_new_link_state"))
+async def save_new_link(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    type_link = data.get("type_link")
+    link = message.text
+    
+    match type_link:
+        case 'розыгрыш':
+            update_config_data(type_data='розыгрыш', new_data=message.text)
+        case 'менеджера':
+            update_config_data(type_data='менеджера', new_data=message.text)
+        case 'партнера':
+            update_config_data(type_data='партнера', new_data=message.text)
+        
+    
+    await state.clear()
+    await admin_panel(message=message, state=state)
+    

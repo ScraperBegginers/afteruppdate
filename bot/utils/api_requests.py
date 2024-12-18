@@ -113,3 +113,36 @@ def add_complete_sub(user_id, channel_id):
         
         if responseAddIncrement.status_code == 200:
             print(f'Пользователю: {user_id} прибавлен спин')
+            
+def get_all_config():
+    response = requests.get(
+        URL + '/config'
+    )
+    return response.json()
+
+def update_config_data(type_data, new_data):
+
+    if type_data == 'менеджера':
+        data_json = {
+            'link_manager': new_data
+        }
+    elif type_data == 'розыгрыш':
+        data_json = {
+            'link_gift': new_data
+        }
+    elif type_data == 'партнера':
+        data_json = {
+            'link_partner': new_data
+        }
+        
+    response = requests.post(
+        URL + '/config',
+        headers={
+            'Authorization': f'Bearer {API_TOKEN}',
+            'Content-Type': 'application/json'  
+        }, 
+        json=data_json
+    )
+    
+    if response.status_code == 200:
+        print('Конфиг сохранен')
