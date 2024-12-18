@@ -63,7 +63,7 @@ def def_channel(channel_id):
     
 def add_referral(user_id, referral_id):
     response = requests.post(
-        URL + '/add_tasks',
+        URL + '/set_refferal',
         headers={
             'Authorization': f'Bearer {API_TOKEN}',
             'Content-Type': 'application/json'  
